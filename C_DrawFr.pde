@@ -1,4 +1,5 @@
 void activatePage(page p){
+  pageChanged = true;
   //deactivates other pages:
   for(int i = 0; i<pages.size(); i++){
     if(pages.get(i) != p){
@@ -21,28 +22,45 @@ void drawFrame(page p){
 
 void drawPageLayout(page p){
   String name = p.pageTag();
-  backDrop();
-  boxGrid();
-  if(name.equals("main.pg")){
-    basicCorners();
-    System.out.print("test");
+  if(!name.equals("entityCreator.pg") && p.layerPriority() == 3){
+    image(blank,0,0);
+  }
+  if(boxGrid && !name.equals("entityCreator.pg") && p.layerPriority() == 3){
+    image(grid,0,0);
+  }
+  
+  if(p.layerPriority==3){
+    image(p.getPGraphic(),0,0);
+  }
+  
+  if(name.equals("playScreen.pg")){
+    drawBinaryBlocks();
+  }
+  if(name.equals("editLevel.pg")){
+    drawEditingBlocks();
+  }
+  if(name.equals("entityCreator.pg")){
+    drawTempShapes();
+  }
+  
+  if(p.layerPriority<=2){
+    image(p.getPGraphic(),0,0);
   }
 }
 void drawPageButtons(page p ){
-}
-
-void boxGrid(){
-  for(int x = 0; x<25; x++){
-    for(int y = 0; y<25; y++){
-      defaultRect(-1,0);
-      rect(x*s,y*s,s,s);
+  String name = p.pageTag();
+  for(int i = 0; i<p.getPageButtons().size(); i++){
+    drawButton(p.getPageButtons().get(i));
+  }
+  if(name.equals("levels.pg")){
+    for(int col = 1; col<=3; col++){
+      for(int row = 1; row<=3; row++){
+        button tempB = new button(grey1,0,"tempLevel",(int)(4.64*s+(row*3.299*s)),(int)(2.64*s+(col*3.299*s)),(int)(2.566*s),(int)(2.566*s));
+        //buttonTag will later be used as index for ArrayList
+        tempB.setButtonTag((3*(col-1)+row)-1);
+        drawButton(tempB);
+      }
     }
   }
-}
-void basicCorners(){
-  defaultRect(120,0);
-  rect(0,0,2*s,10*s);
-  rect(0,sH-10*s,2*s,10*s);
-  rect(sH-2*s,0,2*s,10*s);
-  rect(sH-2*s,sH-10*s,2*s,10*s);
+  
 }
